@@ -35,14 +35,13 @@ public class Main {
                             String firstReading = input.readLine();
                             readInputStream(input, inputList, firstReading);
 
-				        executeCommand(hazeDatabase, client, inputList);
+                            executeCommand(hazeDatabase, client, inputList);
 
-				        inputList.forEach(System.out::println); // For checking incoming message
+                            inputList.forEach(System.out::println); // For checking incoming message
 
-						printThreadDebug();
+                            printThreadDebug();
 
-                        Log4j2.info("Client closed");
-
+                        }
                     } catch (IOException e) {
                         Log4j2.error(String.valueOf(e));
                     }

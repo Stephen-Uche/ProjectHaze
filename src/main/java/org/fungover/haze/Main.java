@@ -70,7 +70,6 @@ public class Main {
                 default -> client.getOutputStream().write("-ERR unknown command\r\n".getBytes());
             }
     }
-
     private static String getValueIfExist(List<String> inputList) {
         Log4j2.debug("getValueIfExist: " + inputList);
         if (inputList.size() == 3)

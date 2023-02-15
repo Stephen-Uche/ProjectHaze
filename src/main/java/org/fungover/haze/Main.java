@@ -29,18 +29,18 @@ public class Main {
                     try {
                         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-                        List<String> inputList = new ArrayList<>();
+                        while (true) {
+                            List<String> inputList = new ArrayList<>();
 
-                        String firstReading = input.readLine();
-                        readInputStream(input, inputList, firstReading);
+                            String firstReading = input.readLine();
+                            readInputStream(input, inputList, firstReading);
 
-                        executeCommand(hazeDatabase, client, inputList);
+				        executeCommand(hazeDatabase, client, inputList);
 
-                        inputList.forEach(System.out::println); // For checking incoming message
+				        inputList.forEach(System.out::println); // For checking incoming message
 
-                        printThreadDebug();
+						printThreadDebug();
 
-                        client.close();
                         Log4j2.info("Client closed");
 
                     } catch (IOException e) {
@@ -64,13 +64,12 @@ public class Main {
             IOException {
         Log4j2.debug("executeCommand: " + hazeDatabase + " " + client + " " + inputList);
         String command = inputList.get(0);
-        String key = inputList.get(1);
-        String value = getValueIfExist(inputList);
 
-        switch (command) {
-            case "SETNX" -> client.getOutputStream().write(hazeDatabase.setNX(key, value).getBytes());
-            default -> client.getOutputStream().write("-ERR unknown command\r\n".getBytes());
-        }
+            switch (command) {
+                case "SETNX" -> client.getOutputStream().write(hazeDatabase.setNX(inputList.get(1), getValueIfExist(inputList)).getBytes());
+                case "SAVE" -> client.getOutputStream().write(SaveFile.writeOnFile(hazeDatabase.copy()).getBytes());
+                default -> client.getOutputStream().write("-ERR unknown command\r\n".getBytes());
+            }
     }
 
     private static String getValueIfExist(List<String> inputList) {

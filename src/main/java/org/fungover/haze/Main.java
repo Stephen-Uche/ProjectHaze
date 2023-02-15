@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Main {
+
     public static void main(String[] args) throws IOException {
         Initialize initialize = new Initialize();
         initialize.importCliOptions(args);
@@ -34,7 +34,7 @@ public class Main {
 
                             String firstReading = input.readLine();
                             readInputStream(input, inputList, firstReading);
-
+                            
                             executeCommand(hazeDatabase, client, inputList);
 
                             inputList.forEach(System.out::println); // For checking incoming message
@@ -52,7 +52,6 @@ public class Main {
             Log4j2.error(String.valueOf(e));
         }
     }
-
 
     private static void printThreadDebug() {
         Log4j2.debug("ThreadID " + Thread.currentThread().threadId());  // Only for Debug
@@ -75,7 +74,6 @@ public class Main {
         if (inputList.size() == 3)
             return inputList.get(2);
         return "";
-    }
 
     private static void readInputStream(BufferedReader input, List<String> inputList, String firstReading) throws
             IOException {

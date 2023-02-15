@@ -1,7 +1,9 @@
 package org.fungover.haze;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -14,6 +16,7 @@ public class HazeDatabase {
         this.database = new HashMap<>();
         this.lock = new ReentrantLock();
     }
+
     public String set(String key, String value) {
         lock.lock();
         try {
@@ -29,29 +32,29 @@ public class HazeDatabase {
     public String get(String key) {
         lock.lock();
         try {
-            //return value when key is passed
             if (database.containsKey(key)) {
-                return getString(key);
-            }
+                var value = database.get(key);
+                return "$" + value.length() + "\r\n" + value + "\r\n";
+            } else return "$-1\r\n";
         } finally {
             lock.unlock();
         }
-        return "$-1\r\n";
-    }
-    public String getString(String key) {
-        return "$" + database.get(key).length() + "\r\n" + database.get(key) + "\r\n";
     }
 
-
-    public String delete(String key) {
+    public String delete(List<String> keys) {
+        var counter = new AtomicInteger(0);
         lock.lock();
         try {
-            //remove key when it is passed, ignores if there is no key
+            keys.forEach(key -> {
+                if (database.containsKey(key)) {
+                    database.remove(key);
+                    counter.getAndIncrement();
+                }
+            });
+            return ":" + counter + "\r\n";
         } finally {
             lock.unlock();
-
         }
-        return "";
     }
 
     public String exists(String key) {
@@ -65,7 +68,12 @@ public class HazeDatabase {
         return "";
     }
 
-    public String setNX(String key, String value) {
+    public String setNX(List<String> inputList) {
+        if (inputList.size() != 3)
+            return "-ERR wrong number of arguments for command\r\n";
+        String key = inputList.get(1);
+        String value = inputList.get(2);
+
         String replyWhenKeyNotSet = ":0\r\n";
         String replyWhenKeySet = ":1\r\n";
         lock.lock();

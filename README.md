@@ -37,3 +37,7 @@
     <img src="https://img.shields.io/github/languages/top/fungover/haze" alt="Language workflow badge"/>
 </div>
 </section>
+
+
+# Haze:
+Key-Value database that talks RESP

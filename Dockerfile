@@ -1,4 +1,4 @@
-FROM eclipse-temurin:19-jre-jammy
+FROM eclipse-temurin:20-jre-jammy
 COPY target/classes /app
 WORKDIR /app
 EXPOSE 6379
